@@ -41,7 +41,6 @@ task = {
     "sessionId": session_id
 }
 
-# Biraz bekle, SSE bağlantısının kurulmasına zaman tanı
 time.sleep(1)  # Gerekirse bu süreyi artırabilirsiniz
 
 # Görevi POST ile gönder
