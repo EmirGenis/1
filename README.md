@@ -8,6 +8,8 @@ import uuid
 import threading
 import sseclient
 import time
+import json
+
 
 # Oturum kimliği oluştur
 session_id = str(uuid.uuid4())
@@ -30,7 +32,7 @@ def listen_to_sse():
         print(f"❌ SSE Bağlantı Hatası: {e}")
 
 # SSE dinleyicisini başlat
-thread = threading.Thread(target=listen_to_sse)
+thread = threading.Thread(target=listen_to_sse, daemon=True)
 thread.start()
 
 # Görev JSON'u
@@ -41,11 +43,16 @@ task = {
     "sessionId": session_id
 }
 
+headers = {
+    "Content-Type": "application/json"
+}
+
+# Biraz bekle, SSE bağlantısının kurulmasına zaman tanı
 time.sleep(1)  # Gerekirse bu süreyi artırabilirsiniz
 
 # Görevi POST ile gönder
 try:
-    response = requests.post(post_url, json=task)
+    response = requests.post(post_url, json=task, headers=headers)
     response.raise_for_status()
 except requests.exceptions.RequestException as e:
     print(f"❌ POST Hata: {e}")
@@ -53,9 +60,6 @@ else:
     print(f"✅ POST Başarılı: {response.status_code}")
     print(f"🧠 Kullanılan sessionId: {session_id}")
     print(f"📨 Yanıt içeriği: {response.text}")
-
-# Thread'in bitmesini bekle (isteğe bağlı)
-# thread.join()
 
 
 #ERROR
